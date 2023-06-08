@@ -1,0 +1,49 @@
+<h1>Ticket Information</h1>
+<p>Request Number: <%= @ticket.request_number %></p>
+<!-- Display other ticket information -->
+
+<h2>Excavator Information</h2>
+<p>Company Name: <%= @ticket.excavator.company_name %></p>
+<p>Address: <%= @ticket.excavator.address %></p>
+<p>Crew On Site: <%= @ticket.excavator.crew_on_site %></p>
+
+<h2>Digsite Map</h2>
+<div id="map" style="width: 100%; height: 400px;"></div>
+
+<script>
+  function initMap() {
+    var wellKnownText = '<%= @ticket.digsite_well_known_text %>';
+
+    var coordinates = wellKnownText.match(/-?\d+\.?\d*/g);
+
+    var map = new google.maps.Map(document.getElementById('map'), {
+      center: { lat: parseFloat(coordinates[1]), lng: parseFloat(coordinates[0]) },
+      zoom: 12
+    });
+
+    var polygonCoords = [];
+    for (var i = 0; i < coordinates.length; i += 2) {
+      polygonCoords.push({
+        lat: parseFloat(coordinates[i + 1]),
+        lng: parseFloat(coordinates[i])
+      });
+    }
+
+    var polygon = new google.maps.Polygon({
+      paths: polygonCoords,
+      strokeColor: '#FF0000',
+      strokeOpacity: 0.8,
+      strokeWeight: 2,
+      fillColor: '#FF0000',
+      fillOpacity: 0.35
+    });
+    console.log(polygon, '====');
+    polygon.setMap(map);
+  }
+
+  window.addEventListener('load', initMap);
+</script>
+
+
+
+<%= link_to 'Back to Tickets', api_v1_tickets_path %>

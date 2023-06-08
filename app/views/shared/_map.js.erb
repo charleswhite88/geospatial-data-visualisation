@@ -1,0 +1,29 @@
+<script>
+  function initMap() {
+    var wellKnownText = '<%= @ticket.digsite_well_known_text %>';
+    var coordinates = wellKnownText.match(/-?\d+\.?\d*/g);
+
+    var map = new google.maps.Map(document.getElementById('map'), {
+      center: { lat: parseFloat(coordinates[1]), lng: parseFloat(coordinates[0]) },
+      zoom: 12
+    });
+
+    var polygon = new google.maps.Polygon({
+      paths: coordinates.map(function (coord, index) {
+        return {
+          lat: parseFloat(coordinates[index + 1]),
+          lng: parseFloat(coordinates[index])
+        };
+      }),
+      strokeColor: '#FF0000',
+      strokeOpacity: 0.8,
+      strokeWeight: 2,
+      fillColor: '#FF0000',
+      fillOpacity: 0.35
+    });
+
+    polygon.setMap(map);
+  }
+
+  google.maps.event.addDomListener(window, 'load', initMap);
+</script>
